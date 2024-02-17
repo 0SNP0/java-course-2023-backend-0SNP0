@@ -1,9 +1,8 @@
 package edu.java.bot.commands;
 
-import com.pengrad.telegrambot.model.BotCommand;
+import java.util.List;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
 @Getter @Component
 public class Commands {

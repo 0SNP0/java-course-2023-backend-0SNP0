@@ -4,6 +4,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 
 public class Validation {
+    private Validation() {
+    }
+
     public static boolean isLink(String text) {
         try {
             //noinspection ResultOfMethodCallIgnored

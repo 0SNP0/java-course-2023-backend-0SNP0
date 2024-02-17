@@ -1,12 +1,12 @@
 package edu.java.bot.repositories;
 
 import edu.java.bot.exceptions.UserIsNotRegisteredException;
-import org.springframework.stereotype.Repository;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class LinksMemoryRepository implements LinksRepository {
@@ -23,7 +23,9 @@ public class LinksMemoryRepository implements LinksRepository {
 
     private Set<String> getSet(long chatId) throws UserIsNotRegisteredException {
         var set = map.get(chatId);
-        if (set == null) throw new UserIsNotRegisteredException();
+        if (set == null) {
+            throw new UserIsNotRegisteredException();
+        }
         return set;
     }
 

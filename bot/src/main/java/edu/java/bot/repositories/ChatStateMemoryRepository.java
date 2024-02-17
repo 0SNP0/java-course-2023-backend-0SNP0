@@ -1,9 +1,9 @@
 package edu.java.bot.repositories;
 
 import edu.java.bot.commands.Command;
-import org.springframework.stereotype.Repository;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ChatStateMemoryRepository implements ChatStateRepository {

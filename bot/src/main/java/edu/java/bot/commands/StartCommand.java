@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 public class StartCommand extends CommandWithoutArgs {
 
     final transient LinksRepository linksRepository;
+
     protected StartCommand(LinksRepository linksRepository) {
-        super("/start",
+        super(
+            "/start",
             "Register this user",
             "You are successfully registered!"
         );

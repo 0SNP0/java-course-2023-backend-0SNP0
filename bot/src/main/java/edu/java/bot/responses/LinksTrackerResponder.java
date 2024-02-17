@@ -5,12 +5,12 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.AbstractCommand;
 import edu.java.bot.commands.Commands;
-import edu.java.bot.repositories.ChatStateRepository;
 import edu.java.bot.exceptions.UserIsNotRegisteredException;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
+import edu.java.bot.repositories.ChatStateRepository;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
 @Component
 public class LinksTrackerResponder implements Responder {
@@ -22,7 +22,7 @@ public class LinksTrackerResponder implements Responder {
         this.chatStates = chatStates;
     }
 
-    public String getAnswer(long chatId, String text) {
+    public String getAnswer(long chatId, @NotNull String text) {
         try {
             if (text.charAt(0) == '/') {
                 var split = text.split(" ", 2);
@@ -30,10 +30,9 @@ public class LinksTrackerResponder implements Responder {
                 if (command == null) {
                     return "Unknown command. Type /help for commands list.";
                 }
-                if (split.length == 2 && !command.isAwaitingArgs()) {
-                    return "This command doesn't need arguments.";
-                }
-                return split.length == 1 ? command.run(chatId) : command.handleNext(chatId, split[1]);
+                return split.length == 1 ? command.run(chatId)
+                    : command.isAwaitingArgs() ? command.handleNext(chatId, split[1])
+                    : "This command doesn't need arguments.";
             } else {
                 return chatStates.getCurrentCommand(chatId).handleNext(chatId, text);
             }

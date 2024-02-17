@@ -7,9 +7,9 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import edu.java.bot.commands.Commands;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.responses.Responder;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class Bot implements UpdatesListener {

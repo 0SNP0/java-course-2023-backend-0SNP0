@@ -9,6 +9,7 @@ public abstract class AbstractCommand extends BotCommand implements Command {
     protected final String answer;
     @Getter protected final boolean awaitingArgs;
     @Autowired protected transient ChatStateRepository states;
+
     protected AbstractCommand(String command, String description, String answer, boolean awaitingArgs) {
         super(command, description);
         this.answer = answer;

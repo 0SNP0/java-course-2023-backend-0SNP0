@@ -1,12 +1,13 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.repositories.LinksRepository;
 import edu.java.bot.exceptions.UserIsNotRegisteredException;
+import edu.java.bot.repositories.LinksRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ListCommand extends CommandWithoutArgs {
     final transient LinksRepository linksRepository;
+
     protected ListCommand(LinksRepository linksRepository) {
         super(
             "/list",
