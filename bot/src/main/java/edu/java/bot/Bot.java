@@ -9,6 +9,8 @@ import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.responses.Responder;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,9 +27,9 @@ public class Bot implements UpdatesListener {
         this.responder = responder;
         this.commands = commands;
         this.bot = new TelegramBot(config.telegramToken());
-        start();
     }
 
+    @EventListener(ApplicationReadyEvent.class)
     void start() {
         bot.execute(new SetMyCommands(commands.asArray()));
         bot.setUpdatesListener(this, e -> System.err.println(e.response().toString()));
