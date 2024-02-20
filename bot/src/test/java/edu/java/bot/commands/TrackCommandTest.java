@@ -10,7 +10,9 @@ public class TrackCommandTest extends CommandTest {
     @Override
     public void init() {
         super.init();
-        command = new TrackCommand(linksRepository);
+        var trackCommand = new TrackCommand();
+        trackCommand.linksRepository = linksRepository;
+        command = trackCommand;
         command.states = chatStateRepository;
     }
 

@@ -21,26 +21,27 @@ public class LinksMemoryRepository implements LinksRepository {
         return true;
     }
 
-    private Set<String> getSet(long chatId) throws UserIsNotRegisteredException {
-        var set = map.get(chatId);
-        if (set == null) {
-            throw new UserIsNotRegisteredException();
-        }
-        return set;
+    @Override
+    public boolean isRegistered(long chatId) {
+        return map.containsKey(chatId);
     }
 
     @Override
-    public boolean addLink(long chatId, String link) throws UserIsNotRegisteredException {
-        return getSet(chatId).add(link);
+    public boolean addLink(long chatId, String link) {
+        return map.get(chatId).add(link);
     }
 
     @Override
     public List<String> getLinks(long chatId) throws UserIsNotRegisteredException {
-        return getSet(chatId).stream().toList();
+        var set = map.get(chatId);
+        if (set == null) {
+            throw new UserIsNotRegisteredException();
+        }
+        return set.stream().toList();
     }
 
     @Override
-    public boolean removeLink(long chatId, String link) throws UserIsNotRegisteredException {
-        return getSet(chatId).remove(link);
+    public boolean removeLink(long chatId, String link) {
+        return map.get(chatId).remove(link);
     }
 }

@@ -10,7 +10,9 @@ public class UntrackCommandTest extends CommandTest {
     @Override
     public void init() {
         super.init();
-        command = new UntrackCommand(linksRepository);
+        var untrackCommand = new UntrackCommand();
+        untrackCommand.linksRepository = linksRepository;
+        command = untrackCommand;
         command.states = chatStateRepository;
     }
 
