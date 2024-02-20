@@ -46,6 +46,9 @@ public class LinksTrackerResponder implements Responder {
     public SendMessage process(Update update) {
         var chatId = update.message().chat().id();
         var text = update.message().text();
-        return new SendMessage(chatId, getAnswer(chatId, text));
+        return new SendMessage(
+            chatId,
+            text == null ? "Only text messages is allowed" : getAnswer(chatId, text)
+        );
     }
 }

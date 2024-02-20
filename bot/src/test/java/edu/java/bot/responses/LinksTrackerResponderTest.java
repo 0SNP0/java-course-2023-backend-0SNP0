@@ -13,6 +13,10 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class LinksTrackerResponderTest {
+
+    private static final String SUCCESS = "Success";
+    private static final String ANSWER = "Answer";
+
     private final long chatId = 1L;
     private ChatStateRepository chatStateRepository;
     private LinksTrackerResponder responder;
@@ -123,7 +127,4 @@ public class LinksTrackerResponderTest {
             .isEqualTo("You should to register at first.");
         verify(chatStateRepository, times(1)).clearState(chatId);
     }
-
-    private static final String SUCCESS = "Success";
-    private static final String ANSWER = "Answer";
 }
