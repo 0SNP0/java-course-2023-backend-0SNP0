@@ -15,12 +15,16 @@ public class ClientConfiguration {
 
     @Bean
     public GithubClient githubClient() {
-        var link = config.clients().github();
-        return link == null ? new GithubClient() : new GithubClient(link);
+        if (config.clients() == null || config.clients().github() == null) {
+            return new GithubClient();
+        }
+        return new GithubClient(config.clients().github());
     }
 
     @Bean StackoverflowClient stackoverflowClient() {
-        var link = config.clients().stackoverflow();
-        return link == null ? new StackoverflowClient() : new StackoverflowClient(link);
+        if (config.clients() == null || config.clients().stackoverflow() == null) {
+            return new StackoverflowClient();
+        }
+        return new StackoverflowClient(config.clients().stackoverflow());
     }
 }

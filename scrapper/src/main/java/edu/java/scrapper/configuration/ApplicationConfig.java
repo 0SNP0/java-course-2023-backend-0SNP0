@@ -12,7 +12,6 @@ public record ApplicationConfig(
     @NotNull
     @Bean
     Scheduler scheduler,
-    @NotNull
     ApiLinks clients
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
