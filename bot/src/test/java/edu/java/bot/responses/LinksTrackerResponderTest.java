@@ -1,11 +1,12 @@
 package edu.java.bot.responses;
 
-import edu.java.bot.commands.AbstractCommand;
-import edu.java.bot.commands.CommandWithArgs;
-import edu.java.bot.commands.CommandWithoutArgs;
-import edu.java.bot.commands.Commands;
-import edu.java.bot.exceptions.UserIsNotRegisteredException;
-import edu.java.bot.repositories.ChatStateRepository;
+import edu.java.bot.command.AbstractCommand;
+import edu.java.bot.command.CommandWithArgs;
+import edu.java.bot.command.CommandWithoutArgs;
+import edu.java.bot.command.Commands;
+import edu.java.bot.exception.UserIsNotRegisteredException;
+import edu.java.bot.repository.ChatStateRepository;
+import edu.java.bot.service.responses.LinksTrackerResponder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;

@@ -1,5 +1,6 @@
 package edu.java.scrapper.configuration;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +13,9 @@ public record ApplicationConfig(
     @NotNull
     @Bean
     Scheduler scheduler,
-    ApiLinks clients
+    ApiLinks clients,
+    @NotEmpty
+    String botApi
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }

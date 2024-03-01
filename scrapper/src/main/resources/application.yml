@@ -6,6 +6,7 @@ app:
   clients:
     github: https://api.github.com
     stackoverflow: https://api.stackexchange.com/2.3
+  bot-api: ${SCRAPPER_BASE_URL:http://localhost:8080}
 
 spring:
   application:
@@ -13,6 +14,10 @@ spring:
 
 server:
   port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
 
 logging:
   config: classpath:log4j2-plain.xml

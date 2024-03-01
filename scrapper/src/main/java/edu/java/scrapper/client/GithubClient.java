@@ -1,6 +1,6 @@
 package edu.java.scrapper.client;
 
-import edu.java.scrapper.entities.GithubResponse;
+import edu.java.scrapper.entity.GithubResponse;
 
 public class GithubClient extends AbstractClient<GithubResponse> {
     private static final String DEFAULT_URL = "https://api.github.com";

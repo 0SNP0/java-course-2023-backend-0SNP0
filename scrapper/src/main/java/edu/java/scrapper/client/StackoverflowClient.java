@@ -1,6 +1,6 @@
 package edu.java.scrapper.client;
 
-import edu.java.scrapper.entities.StackoverflowResponse;
+import edu.java.scrapper.entity.StackoverflowResponse;
 
 public class StackoverflowClient extends AbstractClient<StackoverflowResponse> {
     private static final String DEFAULT_URL = "https://api.stackexchange.com/2.3";
