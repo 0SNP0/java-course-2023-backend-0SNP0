@@ -1,16 +1,20 @@
 package edu.java.scrapper.configuration;
 
+import edu.java.scrapper.client.BotClient;
 import edu.java.scrapper.client.GithubClient;
 import edu.java.scrapper.client.StackoverflowClient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class ClientConfiguration {
     final ApplicationConfig config;
 
-    public ClientConfiguration(ApplicationConfig config) {
-        this.config = config;
+    @Bean
+    public BotClient botClient() {
+        return new BotClient(config.botApi());
     }
 
     @Bean
