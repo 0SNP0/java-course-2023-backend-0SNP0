@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class ClientConfiguration {
-    final ApplicationConfig config;
+    private final ApplicationConfig config;
 
-    @Bean ScrapperClient scrapperClient() {
+    @Bean
+    public ScrapperClient scrapperClient() {
         return new ScrapperClient(config.scrapperApi());
     }
 }

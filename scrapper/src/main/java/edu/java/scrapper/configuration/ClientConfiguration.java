@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class ClientConfiguration {
-    final ApplicationConfig config;
+    private final ApplicationConfig config;
 
     @Bean
     public BotClient botClient() {
@@ -25,7 +25,8 @@ public class ClientConfiguration {
         return new GithubClient(config.clients().github());
     }
 
-    @Bean StackoverflowClient stackoverflowClient() {
+    @Bean
+    public StackoverflowClient stackoverflowClient() {
         if (config.clients() == null || config.clients().stackoverflow() == null) {
             return new StackoverflowClient();
         }

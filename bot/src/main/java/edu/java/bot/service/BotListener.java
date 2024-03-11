@@ -33,7 +33,7 @@ public class BotListener implements UpdatesListener {
     public int process(@NotNull List<Update> list) {
         list.forEach(update -> {
             if (update.message() == null) {
-                System.err.println(update);
+                log.debug(update);
                 return;
             }
             bot.execute(responder.process(update));
