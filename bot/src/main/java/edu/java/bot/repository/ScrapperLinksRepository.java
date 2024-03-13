@@ -1,6 +1,7 @@
 package edu.java.bot.repository;
 
 import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.exception.UnsupportedLinkException;
 import edu.java.bot.exception.UserIsNotRegisteredException;
 import edu.java.models.dto.AddLinkRequest;
 import edu.java.models.dto.RemoveLinkRequest;
@@ -9,6 +10,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -37,13 +39,19 @@ public class ScrapperLinksRepository implements LinksRepository {
     }
 
     @Override
-    public boolean addLink(long chatId, String link) {
-        return Boolean.TRUE.equals(
-            client.addLink(chatId, new AddLinkRequest(URI.create(link)))
-                .map(x -> true)
-                .onErrorReturn(false)
-                .block()
-        );
+    public boolean addLink(long chatId, String link) throws UnsupportedLinkException {
+        try {
+            return Boolean.TRUE.equals(
+                client.addLink(chatId, new AddLinkRequest(URI.create(link)))
+                    .map(x -> true)
+                    .block()
+            );
+        } catch (ApiErrorException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_ACCEPTABLE)) {
+                throw new UnsupportedLinkException();
+            }
+            return false;
+        }
     }
 
     @Override

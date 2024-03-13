@@ -4,7 +4,7 @@ import edu.java.models.dto.AddLinkRequest;
 import edu.java.models.dto.LinkResponse;
 import edu.java.models.dto.ListLinksResponse;
 import edu.java.models.dto.RemoveLinkRequest;
-import edu.java.scrapper.service.LinksService;
+import edu.java.scrapper.service.LinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LinksController {
     private static final String CHAT_ID_HEADER = "Tg-Chat-Id";
-    private final LinksService service;
+    private final LinkService service;
 
     @GetMapping
     public ListLinksResponse get(@RequestHeader(CHAT_ID_HEADER) Long chatId) {

@@ -62,6 +62,7 @@ public class ScrapperClient {
             .bodyValue(request)
             .retrieve()
             .onStatus(HttpStatus.CONFLICT::equals, ApiErrorException::of)
+            .onStatus(HttpStatus.NOT_ACCEPTABLE::equals, ApiErrorException::of)
             .toEntity(LinkResponse.class);
     }
 
