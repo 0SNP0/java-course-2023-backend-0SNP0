@@ -76,11 +76,13 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     @Override
     @Transactional
     public void unmap(Long chatId, Long linkId) {
-        jdbcTemplate.update(
+        jdbcTemplate.queryForObject(
             """
                 delete from mapping
                  where chat_id = ? or link_id = ?
+                returning *
                 """,
+            (rs, rowNum) -> null,
             chatId,
             linkId
         );
