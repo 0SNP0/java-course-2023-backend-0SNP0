@@ -2,13 +2,10 @@ package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.entity.Link;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface JpaLinkRepository extends JpaRepository<Link, Long> {
     Link findByUrl(URI url);
