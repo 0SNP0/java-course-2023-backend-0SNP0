@@ -1,6 +1,5 @@
 package edu.java.scrapper.repository.jdbc;
 
-import edu.java.scrapper.repository.Repository;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

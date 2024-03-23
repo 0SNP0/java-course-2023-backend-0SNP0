@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.jpa;
 
 import edu.java.models.dto.AddLinkRequest;
 import edu.java.models.dto.LinkResponse;
@@ -7,31 +7,35 @@ import edu.java.models.dto.RemoveLinkRequest;
 import edu.java.scrapper.client.UrlSupporter;
 import edu.java.scrapper.entity.Chat;
 import edu.java.scrapper.entity.Link;
+import edu.java.scrapper.entity.Mapping;
+import edu.java.scrapper.entity.MappingId;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
 import edu.java.scrapper.exception.LinkAlreadyTrackingException;
 import edu.java.scrapper.exception.LinkNotTrackingException;
 import edu.java.scrapper.exception.UnsupportedLinkException;
-import edu.java.scrapper.repository.jdbc.ChatRepository;
-import edu.java.scrapper.repository.jdbc.LinkRepository;
+import edu.java.scrapper.repository.jpa.JpaChatRepository;
+import edu.java.scrapper.repository.jpa.JpaLinkRepository;
+import edu.java.scrapper.repository.jpa.JpaMappingRepository;
 import edu.java.scrapper.service.LinkService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 @RequiredArgsConstructor
-public class JdbcLinkService implements LinkService {
-    private final ChatRepository chatRepository;
-    private final LinkRepository linkRepository;
+public class JpaLinkService implements LinkService {
+    private final JpaChatRepository chatRepository;
+    private final JpaLinkRepository linkRepository;
+    private final JpaMappingRepository mappingRepository;
     private final List<UrlSupporter> urlSupporters;
 
     private void checkRegistration(Long chatId) {
-        try {
-            chatRepository.get(new Chat().setChatId(chatId));
-        } catch (EmptyResultDataAccessException e) {
+        if (!chatRepository.existsById(chatId)) {
             throw new ChatNotRegisteredException();
         }
     }
@@ -39,7 +43,7 @@ public class JdbcLinkService implements LinkService {
     @Override
     public ListLinksResponse getLinks(Long chatId) {
         checkRegistration(chatId);
-        var result = linkRepository.findAll(chatId);
+        var result = mappingRepository.findAllLinksByChatId(chatId);
         return new ListLinksResponse(
             result.stream().map(link -> new LinkResponse(chatId, link.getUrl())).toList(),
             result.size()
@@ -54,47 +58,51 @@ public class JdbcLinkService implements LinkService {
         }
         Link link;
         try {
-            link = linkRepository.add(new Link()
+            link = linkRepository.save(new Link()
                 .setUrl(request.link())
                 .setUpdatedAt(OffsetDateTime.now())
             );
-        } catch (DuplicateKeyException e) {
-            link = linkRepository.get(request.link());
+        } catch (DataIntegrityViolationException e) {
+            link = linkRepository.findByUrl(request.link());
         }
-        try {
-            linkRepository.map(chatId, link.getLinkId());
-        } catch (DuplicateKeyException e) {
+        var mapping = new MappingId().setChatId(chatId).setLinkId(link.getLinkId());
+        if (mappingRepository.existsById(mapping)) {
             throw new LinkAlreadyTrackingException();
         }
-
+        mappingRepository.save(new Mapping().setId(mapping));
         return new LinkResponse(link.getLinkId(), link.getUrl());
     }
 
     @Override
     public LinkResponse removeLink(Long chatId, RemoveLinkRequest request) {
         checkRegistration(chatId);
-        try {
-            var link = linkRepository.get(request.link());
-            linkRepository.unmap(chatId, link.getLinkId());
-            linkRepository.removeIfUnused(link);
-            return new LinkResponse(link.getLinkId(), link.getUrl());
-        } catch (EmptyResultDataAccessException e) {
+        var link = linkRepository.findByUrl(request.link());
+        if (link == null) {
             throw new LinkNotTrackingException();
         }
+        var mapping = new MappingId().setChatId(chatId).setLinkId(link.getLinkId());
+        if (mappingRepository.existsById(mapping)) {
+            throw new LinkNotTrackingException();
+        }
+        mappingRepository.deleteById(mapping);
+        linkRepository.removeIfUnusedById(link.getLinkId());
+        return new LinkResponse(link.getLinkId(), link.getUrl());
     }
 
     @Override
     public void updateLink(Link link) {
-        linkRepository.update(link);
+        linkRepository.save(link);
     }
 
     @Override
     public Collection<Link> getLinks(Duration duration) {
-        return linkRepository.findAll(duration);
+        return linkRepository.findAllNotNewer(
+            OffsetDateTime.now().minusSeconds(duration.getSeconds())
+        );
     }
 
     @Override
     public Collection<Chat> getChats(Long linkId) {
-        return linkRepository.chatsForLink(linkId);
+        return mappingRepository.findAllChatsByLinkId(linkId);
     }
 }

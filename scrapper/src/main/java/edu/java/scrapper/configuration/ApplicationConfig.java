@@ -15,11 +15,18 @@ public record ApplicationConfig(
     Scheduler scheduler,
     ApiLinks clients,
     @NotEmpty
-    String botApi
+    String botApi,
+    @NotNull
+    AccessType databaseAccessType
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
 
     public record ApiLinks(String github, String stackoverflow) {
+    }
+
+    public enum AccessType {
+        JDBC,
+        JPA
     }
 }
