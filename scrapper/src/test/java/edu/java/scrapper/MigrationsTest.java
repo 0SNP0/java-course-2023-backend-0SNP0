@@ -1,4 +1,4 @@
-package edu.java.scrapper.repository;
+package edu.java.scrapper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -10,24 +10,24 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface JpaMappingRepository extends JpaRepository<Mapping, MappingId> {
     @Query("""
-    select l
-      from Link l
-     where l.linkId in (
-        select m.id.linkId
-          from Mapping m
-         where m.id.chatId = ?1
-    )
-    """)
+        select l
+          from Link l
+         where l.linkId in (
+            select m.id.linkId
+              from Mapping m
+             where m.id.chatId = ?1
+        )
+        """)
     List<Link> findAllLinksByChatId(Long chatId);
 
     @Query("""
-    select c
-      from Chat c
-     where c.chatId in (
-        select m.id.chatId
-          from Mapping m
-         where m.id.linkId = ?1
-    )
-    """)
+        select c
+          from Chat c
+         where c.chatId in (
+            select m.id.chatId
+              from Mapping m
+             where m.id.linkId = ?1
+        )
+        """)
     List<Chat> findAllChatsByLinkId(Long linkId);
 }

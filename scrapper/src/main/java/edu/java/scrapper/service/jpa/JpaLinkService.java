@@ -17,15 +17,14 @@ import edu.java.scrapper.repository.jpa.JpaChatRepository;
 import edu.java.scrapper.repository.jpa.JpaLinkRepository;
 import edu.java.scrapper.repository.jpa.JpaMappingRepository;
 import edu.java.scrapper.service.LinkService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
+import jakarta.persistence.Persistence;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
@@ -45,25 +44,24 @@ public class JpaLinkService implements LinkService {
         checkRegistration(chatId);
         var result = mappingRepository.findAllLinksByChatId(chatId);
         return new ListLinksResponse(
-            result.stream().map(link -> new LinkResponse(chatId, link.getUrl())).toList(),
+            result.stream().map(link -> new LinkResponse(link.getLinkId(), link.getUrl())).toList(),
             result.size()
         );
     }
 
     @Override
+    @Transactional
     public LinkResponse addLink(Long chatId, AddLinkRequest request) {
         checkRegistration(chatId);
         if (urlSupporters.stream().noneMatch(x -> x.supports(request.link()))) {
             throw new UnsupportedLinkException();
         }
-        Link link;
-        try {
+        var link = linkRepository.findByUrl(request.link());
+        if (link == null) {
             link = linkRepository.save(new Link()
                 .setUrl(request.link())
                 .setUpdatedAt(OffsetDateTime.now())
             );
-        } catch (DataIntegrityViolationException e) {
-            link = linkRepository.findByUrl(request.link());
         }
         var mapping = new MappingId().setChatId(chatId).setLinkId(link.getLinkId());
         if (mappingRepository.existsById(mapping)) {
@@ -74,6 +72,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public LinkResponse removeLink(Long chatId, RemoveLinkRequest request) {
         checkRegistration(chatId);
         var link = linkRepository.findByUrl(request.link());
@@ -81,11 +80,13 @@ public class JpaLinkService implements LinkService {
             throw new LinkNotTrackingException();
         }
         var mapping = new MappingId().setChatId(chatId).setLinkId(link.getLinkId());
-        if (mappingRepository.existsById(mapping)) {
+        if (!mappingRepository.existsById(mapping)) {
             throw new LinkNotTrackingException();
         }
         mappingRepository.deleteById(mapping);
-        linkRepository.removeIfUnusedById(link.getLinkId());
+        if (linkRepository.isUnusedWithId(link.getLinkId())) {
+            linkRepository.delete(link);
+        }
         return new LinkResponse(link.getLinkId(), link.getUrl());
     }
 

@@ -2,10 +2,10 @@ package edu.java.scrapper.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import java.io.Serializable;
 
 @Accessors(chain = true)
 @Data

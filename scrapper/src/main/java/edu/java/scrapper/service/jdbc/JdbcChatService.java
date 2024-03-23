@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 public class JdbcChatService implements ChatService {

@@ -15,13 +15,13 @@ public class JdbcChatRepositoryTest extends JdbcRepositoryTest<JdbcChatRepositor
         super(JdbcChatRepository::new, testEntities);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void get() {
         repository.add(testEntities.getFirst());
         assertThat(repository.get(testEntities.getFirst())).isNotNull();
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void getNotExisted() {
         assertThatExceptionOfType(EmptyResultDataAccessException.class)
             .isThrownBy(() -> repository.get(testEntities.getFirst()));

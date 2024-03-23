@@ -7,7 +7,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.LongStream;
@@ -24,7 +23,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         super(JdbcLinkRepository::new, testEntities);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void update() {
         var link = repository.add(testEntities.getFirst());
         var newDate = OffsetDateTime.now();
@@ -33,7 +32,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
             .isCloseTo(newDate, within(1, ChronoUnit.MICROS));
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void map() {
         var chatRepository = new JdbcChatRepository(jdbcTemplate);
         var chat = chatRepository.add(
@@ -45,7 +44,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         assertThat(repository.findAll(chat.getChatId())).contains(link);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void mapExisted() {
         var chatRepository = new JdbcChatRepository(jdbcTemplate);
         var chat = chatRepository.add(
@@ -57,7 +56,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
             .isThrownBy(() -> repository.map(chat.getChatId(), link.getLinkId()));
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void unmap() {
         var chatRepository = new JdbcChatRepository(jdbcTemplate);
         var chat = chatRepository.add(
@@ -69,7 +68,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         assertThat(repository.findAll(chat.getChatId())).doesNotContain(link);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void unmapNotExisted() {
         var chatRepository = new JdbcChatRepository(jdbcTemplate);
         var chat = chatRepository.add(
@@ -80,7 +79,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
             .isThrownBy(() -> repository.unmap(chat.getChatId(), link.getLinkId()));
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void removeIfUnused() {
         var link = repository.add(testEntities.getFirst());
         repository.removeIfUnused(link);
@@ -88,7 +87,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
             .isThrownBy(() -> repository.get(link.getUrl()));
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void removeOnlyUnused() {
         var chatRepository = new JdbcChatRepository(jdbcTemplate);
         var chat = chatRepository.add(
@@ -100,7 +99,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         assertThat(repository.get(link.getUrl())).isEqualTo(link);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void chatsForLink() {
         var chatRepository = new JdbcChatRepository(jdbcTemplate);
         var chat = chatRepository.add(
@@ -114,7 +113,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         assertThat(repository.chatsForLink(link.getLinkId())).containsOnly(chat);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void findAllByChat() {
         var chatRepository = new JdbcChatRepository(jdbcTemplate);
         var chat = chatRepository.add(
@@ -126,7 +125,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         assertThat(repository.findAll(chat.getChatId())).containsOnly(link);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void findAllByDuration() {
         var link = repository.add(testEntities.getFirst().setUpdatedAt(
             OffsetDateTime.now().minusSeconds(10)

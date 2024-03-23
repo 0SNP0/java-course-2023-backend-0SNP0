@@ -8,11 +8,11 @@ import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.jpa.JpaChatService;
 import edu.java.scrapper.service.jpa.JpaLinkService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.List;
 
 @Configuration
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")

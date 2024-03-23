@@ -1,22 +1,14 @@
 package edu.java.scrapper.repository.jdbc;
 
-import edu.java.scrapper.repository.IntegrationTest;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import edu.java.scrapper.IntegrationTest;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -37,44 +29,36 @@ public abstract class JdbcRepositoryTest<R extends JdbcRepository<T>, T> extends
         repository = repoConstructor.apply(jdbcTemplate);
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void add() {
         assertThat(repository.findAll()).isEmpty();
         repository.add(testEntities.getFirst());
         assertThat(repository.findAll()).isNotEmpty();
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void addExisted() {
         repository.add(testEntities.getFirst());
         assertThatExceptionOfType(DuplicateKeyException.class)
             .isThrownBy(() -> repository.add(testEntities.getFirst()));
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void remove() {
         add();
         repository.remove(testEntities.getFirst());
         assertThat(repository.findAll()).isEmpty();
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void removeNotExisted() {
         assertThatExceptionOfType(EmptyResultDataAccessException.class)
             .isThrownBy(() -> repository.remove(testEntities.getFirst()));
     }
 
-    @JdbcTest
+    @TestTransactionalRollback
     void FindAllTest() {
         testEntities.forEach(repository::add);
         assertThat(repository.findAll()).size().isEqualTo(testEntities.size());
-    }
-
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @Test
-    @Transactional
-    @Rollback
-    protected @interface JdbcTest {
     }
 }

@@ -41,7 +41,7 @@ public class JdbcLinkService implements LinkService {
         checkRegistration(chatId);
         var result = linkRepository.findAll(chatId);
         return new ListLinksResponse(
-            result.stream().map(link -> new LinkResponse(chatId, link.getUrl())).toList(),
+            result.stream().map(link -> new LinkResponse(link.getLinkId(), link.getUrl())).toList(),
             result.size()
         );
     }
