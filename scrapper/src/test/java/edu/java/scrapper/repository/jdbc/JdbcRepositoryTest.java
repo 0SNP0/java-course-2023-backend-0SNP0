@@ -45,8 +45,8 @@ public abstract class JdbcRepositoryTest<R extends JdbcRepository<T>, T> extends
 
     @TestTransactionalRollback
     void remove() {
-        add();
-        repository.remove(testEntities.getFirst());
+        var entity = repository.add(testEntities.getFirst());
+        repository.remove(entity);
         assertThat(repository.findAll()).isEmpty();
     }
 
