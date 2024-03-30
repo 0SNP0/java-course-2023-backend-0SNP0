@@ -3,6 +3,9 @@ package edu.java.scrapper.client;
 import edu.java.scrapper.entity.ClientResponse;
 import java.net.URI;
 import java.util.regex.Pattern;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -12,6 +15,9 @@ public abstract class AbstractClient<T extends ClientResponse> implements Client
     protected Class<T> responseEntity;
     protected final String linkBaseUrl;
     protected final Pattern pattern;
+    @Autowired
+    @Qualifier("links")
+    protected RetryTemplate retryTemplate;
 
     protected AbstractClient(String apiUrl, Class<T> responseEntity, String linkBaseUrl, Pattern pattern) {
         this.hostUrl = apiUrl;
@@ -25,7 +31,9 @@ public abstract class AbstractClient<T extends ClientResponse> implements Client
 
     @Override
     public Mono<T> fetch(String path) {
-        return client.get().uri(uri(path)).retrieve().bodyToMono(responseEntity);
+        return retryTemplate.execute(ctx ->
+            client.get().uri(uri(path)).retrieve().bodyToMono(responseEntity)
+        );
     }
 
     @Override

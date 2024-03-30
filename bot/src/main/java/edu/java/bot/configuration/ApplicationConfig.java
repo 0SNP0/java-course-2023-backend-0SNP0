@@ -1,10 +1,10 @@
 package edu.java.bot.configuration;
 
 import jakarta.validation.constraints.NotEmpty;
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
-import java.util.Set;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)

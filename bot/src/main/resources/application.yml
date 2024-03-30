@@ -2,7 +2,7 @@ app:
   telegram-token: ${TELEGRAM_TOKEN}
   scrapper-api: ${SCRAPPER_BASE_URL:http://localhost:8080}
   retry:
-    http-statuses: 500
+    http-statuses: 429, 500
     type: linear
     max-attempts: 5
     config:
@@ -13,11 +13,30 @@ app:
 spring:
   application:
     name: bot
+  cache:
+    cache-names:
+      - bot-rate-limit
+    caffeine:
+      spec: maximumSize=200000,expireAfterAccess=60s
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
   jackson:
     time-zone: UTC
 
 server:
   port: 8090
+
+bucket4j:
+  filters:
+    - cache-name: bot-rate-limit
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"Too Many Requests\" }"
+      rate-limits:
+        - bandwidths:
+            - capacity: 100
+              refill-speed: interval
+              time: 1
+              unit: minutes
+      url: /.*
 
 springdoc:
   swagger-ui:

@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -22,6 +23,7 @@ public class GithubClientTest {
 
     public GithubClientTest(@NotNull WireMockRuntimeInfo wmRuntimeInfo) {
         client = new GithubClient(wmRuntimeInfo.getHttpBaseUrl());
+        client.retryTemplate = new RetryTemplate();
     }
 
     @Test
