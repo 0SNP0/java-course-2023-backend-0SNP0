@@ -1,6 +1,6 @@
 package edu.java.scrapper.scheduler;
 
-import edu.java.models.dto.LinkUpdateRequest;
+import edu.java.common.models.dto.LinkUpdateRequest;
 import edu.java.scrapper.client.BotClient;
 import edu.java.scrapper.client.UrlSupporter;
 import edu.java.scrapper.configuration.ApplicationConfig;

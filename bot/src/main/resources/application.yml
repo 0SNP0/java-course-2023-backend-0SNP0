@@ -1,6 +1,14 @@
 app:
   telegram-token: ${TELEGRAM_TOKEN}
   scrapper-api: ${SCRAPPER_BASE_URL:http://localhost:8080}
+  retry:
+    http-statuses: 500
+    type: linear
+    max-attempts: 5
+    config:
+      initial-interval-millis: 1000
+      max-interval-millis: 50000
+      multiplier: 2
 
 spring:
   application:

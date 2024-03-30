@@ -1,7 +1,7 @@
 package edu.java.scrapper.client;
 
-import edu.java.models.dto.LinkUpdateRequest;
-import edu.java.models.exception.ApiErrorException;
+import edu.java.common.models.dto.LinkUpdateRequest;
+import edu.java.common.models.exception.ApiErrorException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;

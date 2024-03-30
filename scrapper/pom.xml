@@ -139,7 +139,7 @@
         </dependency>
         <dependency>
             <groupId>edu.java</groupId>
-            <artifactId>models</artifactId>
+            <artifactId>common</artifactId>
             <version>0.1</version>
             <scope>compile</scope>
         </dependency>

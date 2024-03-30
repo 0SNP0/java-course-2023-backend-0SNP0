@@ -1,6 +1,6 @@
-package edu.java.models.exception;
+package edu.java.common.models.exception;
 
-import edu.java.models.dto.ApiErrorResponse;
+import edu.java.common.models.dto.ApiErrorResponse;
 import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
