@@ -1,11 +1,11 @@
 package edu.java.scrapper.scheduler;
 
 import edu.java.common.models.dto.LinkUpdateRequest;
-import edu.java.scrapper.client.BotClient;
 import edu.java.scrapper.client.UrlSupporter;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.entity.Chat;
 import edu.java.scrapper.service.LinkService;
+import edu.java.scrapper.service.LinkUpdateService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
     private final ApplicationConfig config;
-    private final BotClient botClient;
+    private final LinkUpdateService linkUpdateService;
     private final LinkService linkService;
     private final List<UrlSupporter> clients;
 
@@ -40,12 +40,12 @@ public class LinkUpdaterScheduler {
                 linkService.updateLink(link.setUpdatedAt(clientResponse.updatedAt()));
 
                 var chats = linkService.getChats(link.getLinkId());
-                botClient.notify(new LinkUpdateRequest(
+                linkUpdateService.sendUpdate(new LinkUpdateRequest(
                     link.getLinkId(),
                     link.getUrl(),
                     clientResponse.description(),
                     chats.stream().map(Chat::getChatId).toList()
-                )).block();
+                ));
             }
         });
     }
