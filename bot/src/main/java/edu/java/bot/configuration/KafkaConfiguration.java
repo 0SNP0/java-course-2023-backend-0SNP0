@@ -5,7 +5,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.LongSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -15,7 +18,10 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 @Configuration
 @EnableKafka
@@ -43,10 +49,22 @@ public class KafkaConfiguration {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<Long, LinkUpdateRequest> listenerContainerFactory(
-        ConsumerFactory<Long, LinkUpdateRequest> consumerFactory
+        ConsumerFactory<Long, LinkUpdateRequest> consumerFactory,
+        @Qualifier("dlq")
+        KafkaTemplate<?, ?> kafkaDlqTemplate
     ) {
         var factory = new ConcurrentKafkaListenerContainerFactory<Long, LinkUpdateRequest>();
         factory.setConsumerFactory(consumerFactory);
+        factory.setCommonErrorHandler(new DefaultErrorHandler(
+            new DeadLetterPublishingRecoverer(
+                kafkaDlqTemplate,
+                (consumerRecord, e) -> new TopicPartition(
+                    config.kafka().updatesTopic().name() + DLQ_SUFFIX,
+                    consumerRecord.partition()
+                )
+            ),
+            new FixedBackOff(0L, 0L)
+        ));
         return factory;
     }
 
@@ -65,5 +83,17 @@ public class KafkaConfiguration {
         ProducerFactory<Long, LinkUpdateRequest> producerFactory
     ) {
         return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    @Qualifier("dlq")
+    public KafkaTemplate<?, ?> kafkaDlqTemplate() {
+        var factory = new DefaultKafkaProducerFactory<>(Map.of(
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.kafka().server(),
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
+            JsonSerializer.ADD_TYPE_INFO_HEADERS, false
+        ));
+        return new KafkaTemplate<>(factory);
     }
 }
