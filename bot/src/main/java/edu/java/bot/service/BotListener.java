@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import edu.java.bot.command.Commands;
 import edu.java.bot.service.responses.Responder;
+import io.micrometer.core.instrument.Counter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +23,7 @@ public class BotListener implements UpdatesListener {
     private final TelegramBot bot;
     private final Responder responder;
     private final Commands commands;
+    private final Counter messagesCounter;
 
     @EventListener(ApplicationReadyEvent.class)
     void start() {
@@ -37,6 +39,7 @@ public class BotListener implements UpdatesListener {
                 return;
             }
             bot.execute(responder.process(update));
+            messagesCounter.increment();
         });
         return CONFIRMED_UPDATES_ALL;
     }

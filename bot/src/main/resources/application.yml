@@ -13,6 +13,10 @@ app:
       initial-interval-millis: 1000
       max-interval-millis: 50000
       multiplier: 2
+  micrometer:
+    processed-messages-counter:
+      name: messages.processed
+      description: Number of processed messages from telegram api
 
 spring:
   application:
@@ -48,3 +52,17 @@ springdoc:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info,prometheus
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
