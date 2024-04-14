@@ -8,5 +8,5 @@ public interface ChatService {
 
     void delete(Long chatId) throws ChatNotRegisteredException;
 
-    void isRegistered(Long chatId) throws ChatNotRegisteredException;
+    void shouldBeRegistered(Long chatId) throws ChatNotRegisteredException;
 }
