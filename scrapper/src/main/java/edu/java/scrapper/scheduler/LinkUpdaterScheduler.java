@@ -6,7 +6,7 @@ import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.entity.Chat;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.LinkUpdateService;
-import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,18 +23,18 @@ public class LinkUpdaterScheduler {
     private final ApplicationConfig config;
     private final LinkUpdateService linkUpdateService;
     private final LinkService linkService;
-    private final List<UrlSupporter> clients;
+    private final Map<String, UrlSupporter> clientsMap;
 
     @Scheduled(fixedDelayString = "#{@scheduler.interval().toMillis()}")
     public void update() {
         log.info("Updating links...");
         linkService.getLinks(config.scheduler().forceCheckDelay()).forEach(link -> {
-            var client = clients.stream().filter(x -> x.supports(link.getUrl())).toList();
-            if (client.isEmpty()) {
+            var client = clientsMap.get(link.getClient());
+            if (client == null) {
                 log.error("Unsupported link in DB: %s".formatted(link.getUrl()));
                 return;
             }
-            var clientResponse = client.getFirst().fetch(link.getUrl());
+            var clientResponse = client.fetch(link.getUrl());
 
             if (clientResponse.updatedAt().isAfter(link.getUpdatedAt())) {
                 linkService.updateLink(link.setUpdatedAt(clientResponse.updatedAt()));

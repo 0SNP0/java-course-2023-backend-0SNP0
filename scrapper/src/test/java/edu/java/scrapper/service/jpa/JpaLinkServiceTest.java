@@ -36,6 +36,7 @@ public class JpaLinkServiceTest extends IntegrationTest {
         .mapToObj(x -> new Link().setLinkId(x)
             .setUrl(URI.create("https://github.com/user/repo%d".formatted(x)))
             .setUpdatedAt(OffsetDateTime.now())
+            .setClient("github")
         ).toList();
 
     @Autowired

@@ -33,7 +33,7 @@ public class JdbcChatService implements ChatService {
     }
 
     @Override
-    public void isRegistered(Long chatId) {
+    public void shouldBeRegistered(Long chatId) {
         try {
             chatRepository.get(new Chat().setChatId(chatId));
         } catch (EmptyResultDataAccessException e) {

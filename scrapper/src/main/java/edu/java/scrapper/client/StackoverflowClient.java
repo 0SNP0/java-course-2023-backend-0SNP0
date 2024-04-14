@@ -27,6 +27,11 @@ public class StackoverflowClient extends AbstractClient<StackoverflowResponse> {
     }
 
     @Override
+    public String name() {
+        return "stackoverflow";
+    }
+
+    @Override
     public ClientResponse fetch(URI url) {
         return fetch(pattern.matcher(url.getPath()).group("id")).block();
     }
