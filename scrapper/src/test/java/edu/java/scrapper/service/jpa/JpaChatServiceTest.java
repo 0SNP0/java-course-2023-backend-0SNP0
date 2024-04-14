@@ -50,14 +50,14 @@ public class JpaChatServiceTest extends IntegrationTest {
     }
 
     @TestTransactionalRollback
-    void isRegistered() {
+    void shouldBeRegistered() {
         chatService.register(chatId);
-        assertThatNoException().isThrownBy(() -> chatService.isRegistered(chatId));
+        assertThatNoException().isThrownBy(() -> chatService.shouldBeRegistered(chatId));
     }
 
     @TestTransactionalRollback
     void isNotRegistered() {
         assertThatExceptionOfType(ChatNotRegisteredException.class)
-            .isThrownBy(() -> chatService.isRegistered(chatId));
+            .isThrownBy(() -> chatService.shouldBeRegistered(chatId));
     }
 }
