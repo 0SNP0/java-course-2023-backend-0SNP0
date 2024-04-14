@@ -13,4 +13,5 @@ public class Link {
     private Long linkId;
     private URI url;
     private OffsetDateTime updatedAt;
+    private String client;
 }

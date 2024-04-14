@@ -7,7 +7,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.LongStream;
@@ -18,6 +17,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         .mapToObj(x -> new Link().setLinkId(x)
             .setUrl(URI.create("http://u.r.l/%d".formatted(x)))
             .setUpdatedAt(OffsetDateTime.now())
+            .setClient("test_client")
         ).toList();
 
     protected JdbcLinkRepositoryTest() {

@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +40,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public ListLinksResponse getLinks(Long chatId) {
         checkRegistration(chatId);
         var result = linksRepository.findAll(chatId);
@@ -49,9 +51,11 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public LinkResponse addLink(Long chatId, AddLinkRequest request) {
         checkRegistration(chatId);
-        if (urlSupporters.stream().noneMatch(x -> x.supports(request.link()))) {
+        var client = urlSupporters.stream().filter(x -> x.supports(request.link())).findFirst();
+        if (client.isEmpty()) {
             throw new UnsupportedLinkException();
         }
         Link link;
@@ -59,6 +63,7 @@ public class JdbcLinkService implements LinkService {
             link = linksRepository.add(new Link()
                 .setUrl(request.link())
                 .setUpdatedAt(OffsetDateTime.now())
+                .setClient(client.get().name())
             );
         } catch (DuplicateKeyException e) {
             link = linksRepository.get(request.link());
@@ -73,6 +78,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public LinkResponse removeLink(Long chatId, RemoveLinkRequest request) {
         checkRegistration(chatId);
         try {

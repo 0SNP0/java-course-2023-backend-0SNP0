@@ -12,6 +12,7 @@ public class GithubClient extends AbstractClient<GithubResponse> {
         super(
             apiUrl,
             GithubResponse.class,
+            // "/<user>/<repo>"
             Pattern.compile("^/[0-9a-z-A-Z]+/[\\w-.]+/?$")
         );
     }
@@ -23,6 +24,11 @@ public class GithubClient extends AbstractClient<GithubResponse> {
     @Override
     public String uri(String path) {
         return "/repos/" + path;
+    }
+
+    @Override
+    public String name() {
+        return "github";
     }
 
     @Override

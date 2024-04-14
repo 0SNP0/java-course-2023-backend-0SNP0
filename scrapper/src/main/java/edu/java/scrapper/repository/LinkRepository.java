@@ -6,7 +6,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Collection;
 
-public interface LinkRepository extends Repository<Link> {
+public interface LinkRepository extends JdbcRepository<Link> {
 
     void update(Link link);
 

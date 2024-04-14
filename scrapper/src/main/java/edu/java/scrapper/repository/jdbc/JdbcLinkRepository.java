@@ -8,32 +8,41 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 
-public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepository {
-    public JdbcLinkRepository(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate, Link.class, "links");
-    }
+@RequiredArgsConstructor
+public class JdbcLinkRepository implements LinkRepository {
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
-    @Transactional
-    public Link add(Link link) {
-        return jdbcTemplate.queryForObject(
+    public Collection<Link> findAll() {
+        return jdbcTemplate.query(
             """
-                insert into links (url, updated_at)
-                values (?, ?)
-                returning *
+                select *
+                  from links
                 """,
-            new BeanPropertyRowMapper<>(Link.class),
-            link.getUrl().toString(),
-            link.getUpdatedAt()
+            new BeanPropertyRowMapper<>(Link.class)
         );
     }
 
     @Override
-    @Transactional
+    public Link add(Link link) {
+        return jdbcTemplate.queryForObject(
+            """
+                insert into links (url, updated_at, client)
+                values (?, ?, ?)
+                returning *
+                """,
+            new BeanPropertyRowMapper<>(Link.class),
+            link.getUrl().toString(),
+            link.getUpdatedAt(),
+            link.getClient()
+        );
+    }
+
+    @Override
     public Link remove(Link link) {
         return jdbcTemplate.queryForObject(
             """
@@ -47,7 +56,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public void update(Link link) {
         jdbcTemplate.update(
             """
@@ -61,7 +69,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public void map(Long chatId, Long linkId) {
         jdbcTemplate.update(
             """
@@ -74,7 +81,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public void unmap(Long chatId, Long linkId) {
         jdbcTemplate.queryForObject(
             """
@@ -89,7 +95,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public void removeIfUnused(Link link) {
         jdbcTemplate.update(
             """
@@ -104,7 +109,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public Link get(URI url) {
         return jdbcTemplate.queryForObject(
             """
@@ -118,7 +122,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public Collection<Chat> chatsForLink(Long linkId) {
         return jdbcTemplate.query(
             """
@@ -136,7 +139,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public Collection<Link> findAll(Long chatId) {
         return jdbcTemplate.query(
             """
@@ -154,7 +156,6 @@ public class JdbcLinkRepository extends JdbcRepository<Link> implements LinkRepo
     }
 
     @Override
-    @Transactional
     public Collection<Link> findAll(Duration duration) {
         return jdbcTemplate.query(
             """

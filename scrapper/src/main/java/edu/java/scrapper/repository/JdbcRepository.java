@@ -2,7 +2,7 @@ package edu.java.scrapper.repository;
 
 import java.util.Collection;
 
-public interface Repository<T> {
+public interface JdbcRepository<T> {
     T add(T entity);
 
     T remove(T entity);
