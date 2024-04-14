@@ -29,7 +29,7 @@ public class JpaChatService implements ChatService {
     }
 
     @Override
-    public void isRegistered(Long chatId) throws ChatNotRegisteredException {
+    public void shouldBeRegistered(Long chatId) throws ChatNotRegisteredException {
         if (!chatRepository.existsById(chatId)) {
             throw new ChatNotRegisteredException();
         }
