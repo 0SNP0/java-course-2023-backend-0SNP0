@@ -51,7 +51,8 @@ public class JpaLinkService implements LinkService {
     @Transactional
     public LinkResponse addLink(Long chatId, AddLinkRequest request) {
         checkRegistration(chatId);
-        if (urlSupporters.stream().noneMatch(x -> x.supports(request.link()))) {
+        var client = urlSupporters.stream().filter(x -> x.supports(request.link())).findFirst();
+        if (client.isEmpty()) {
             throw new UnsupportedLinkException();
         }
         var link = linkRepository.findByUrl(request.link());
@@ -59,6 +60,7 @@ public class JpaLinkService implements LinkService {
             link = linkRepository.save(new Link()
                 .setUrl(request.link())
                 .setUpdatedAt(OffsetDateTime.now())
+                .setClient(client.get().name())
             );
         }
         var mapping = new MappingId().setChatId(chatId).setLinkId(link.getLinkId());
