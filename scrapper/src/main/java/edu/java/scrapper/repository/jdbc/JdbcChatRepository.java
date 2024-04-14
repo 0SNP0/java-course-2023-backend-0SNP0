@@ -1,19 +1,28 @@
 package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.entity.Chat;
+import edu.java.scrapper.repository.ChatRepository;
+import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 
-public class JdbcChatRepository extends JdbcRepository<Chat> implements ChatRepository {
-    private static final String TABLE_NAME = "chats";
+@RequiredArgsConstructor
+public class JdbcChatRepository implements ChatRepository {
+    private final JdbcTemplate jdbcTemplate;
 
-    public JdbcChatRepository(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate, Chat.class, TABLE_NAME);
+    @Override
+    public Collection<Chat> findAll() {
+        return jdbcTemplate.query(
+            """
+                select *
+                  from chats
+                """,
+            new BeanPropertyRowMapper<>(Chat.class)
+        );
     }
 
     @Override
-    @Transactional
     public Chat add(Chat chat) {
         return jdbcTemplate.queryForObject(
             """
@@ -28,7 +37,6 @@ public class JdbcChatRepository extends JdbcRepository<Chat> implements ChatRepo
     }
 
     @Override
-    @Transactional
     public Chat remove(Chat chat) {
         return jdbcTemplate.queryForObject(
             """

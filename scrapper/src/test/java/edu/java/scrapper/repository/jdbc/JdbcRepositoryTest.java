@@ -3,6 +3,7 @@ package edu.java.scrapper.repository.jdbc;
 import edu.java.scrapper.IntegrationTest;
 import java.util.List;
 import java.util.function.Function;
+import edu.java.scrapper.repository.JdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

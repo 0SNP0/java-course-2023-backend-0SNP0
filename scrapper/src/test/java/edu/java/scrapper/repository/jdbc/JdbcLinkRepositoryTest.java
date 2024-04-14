@@ -17,6 +17,7 @@ public class JdbcLinkRepositoryTest extends JdbcRepositoryTest<JdbcLinkRepositor
         .mapToObj(x -> new Link().setLinkId(x)
             .setUrl(URI.create("http://u.r.l/%d".formatted(x)))
             .setUpdatedAt(OffsetDateTime.now())
+            .setClient("test_client")
         ).toList();
 
     protected JdbcLinkRepositoryTest() {

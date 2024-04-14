@@ -26,4 +26,5 @@ public class Link {
     private URI url;
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
+    private String client;
 }
