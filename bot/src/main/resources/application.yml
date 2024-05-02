@@ -1,6 +1,10 @@
 app:
   telegram-token: ${TELEGRAM_TOKEN}
   scrapper-api: ${SCRAPPER_BASE_URL:http://localhost:8080}
+  kafka:
+    server: ${KAFKA_BASE_URL:http://localhost:9092}
+    updates-topic:
+      name: updates
   retry:
     http-statuses: 429, 500
     type: linear

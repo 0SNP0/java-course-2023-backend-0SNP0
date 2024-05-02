@@ -20,7 +20,9 @@ public record ApplicationConfig(
     @NotNull
     AccessType databaseAccessType,
     @NotNull
-    Retries retry
+    Retries retry,
+    KafkaConfig kafka,
+    Boolean useKafka
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
@@ -50,6 +52,16 @@ public record ApplicationConfig(
                 Double multiplier
             ) {
             }
+        }
+    }
+
+    public record KafkaConfig(
+        String server,
+        Topic updatesTopic
+    ) {
+        public record Topic(
+            String name
+        ) {
         }
     }
 }

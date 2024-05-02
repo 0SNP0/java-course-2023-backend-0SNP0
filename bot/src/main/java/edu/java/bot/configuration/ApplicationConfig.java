@@ -14,7 +14,9 @@ public record ApplicationConfig(
     @NotEmpty
     String scrapperApi,
     @NotNull
-    Retry retry
+    Retry retry,
+    @NotNull
+    KafkaConfig kafka
 ) {
     public record Retry(
         Set<Integer> httpStatuses,
@@ -30,6 +32,16 @@ public record ApplicationConfig(
             Long initialIntervalMillis,
             Long maxIntervalMillis,
             Double multiplier
+        ) {
+        }
+    }
+
+    public record KafkaConfig(
+        String server,
+        Topic updatesTopic
+    ) {
+        public record Topic(
+            String name
         ) {
         }
     }

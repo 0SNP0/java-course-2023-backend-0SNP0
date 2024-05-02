@@ -8,6 +8,11 @@ app:
     stackoverflow: https://api.stackexchange.com/2.3
   bot-api: ${BOT_BASE_URL:http://localhost:8090}
   database-access-type: jpa
+  kafka:
+    server: ${KAFKA_BASE_URL:http://localhost:9092}
+    updates-topic:
+      name: updates
+  use-kafka: true
   retry:
     links:
       http-statuses: 429, 500, 502, 503, 504
