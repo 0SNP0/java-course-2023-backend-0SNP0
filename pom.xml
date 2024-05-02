@@ -23,11 +23,14 @@
         <!-- Spring -->
         <spring-boot.version>3.2.2</spring-boot.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-retry.version>2.0.5</spring-retry.version>
         <springdoc-openapi-webmvc-ui.version>2.3.0</springdoc-openapi-webmvc-ui.version>
 
         <!-- Other -->
         <jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
         <java-telegram-bot-api.version>7.0.1</java-telegram-bot-api.version>
+        <bucket4j.version>0.12.4</bucket4j.version>
+        <caffeine.version>3.1.8</caffeine.version>
 
         <!-- Tests -->
         <testcontainers.version>1.19.4</testcontainers.version>
@@ -49,7 +52,7 @@
     <modules>
         <module>bot</module>
         <module>scrapper</module>
-        <module>models</module>
+        <module>common</module>
     </modules>
 
     <dependencyManagement>
@@ -63,6 +66,22 @@
                 <groupId>org.wiremock</groupId>
                 <artifactId>wiremock-standalone</artifactId>
                 <version>${wiremock.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
+                <artifactId>bucket4j-spring-boot-starter</artifactId>
+                <version>${bucket4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>jcache</artifactId>
+                <version>${caffeine.version}</version>
             </dependency>
 
             <dependency>
@@ -87,6 +106,12 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.retry</groupId>
+                <artifactId>spring-retry</artifactId>
+                <version>${spring-retry.version}</version>
             </dependency>
 
             <dependency>

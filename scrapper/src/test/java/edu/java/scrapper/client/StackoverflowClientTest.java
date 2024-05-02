@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.springframework.retry.support.RetryTemplate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -23,6 +24,7 @@ public class StackoverflowClientTest {
 
     public StackoverflowClientTest(@NotNull WireMockRuntimeInfo wmRuntimeInfo) {
         client = new StackoverflowClient(wmRuntimeInfo.getHttpBaseUrl());
+        client.retryTemplate = new RetryTemplate();
     }
 
     @Test

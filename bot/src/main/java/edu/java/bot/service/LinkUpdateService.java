@@ -2,7 +2,7 @@ package edu.java.bot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.models.dto.LinkUpdateRequest;
+import edu.java.common.models.dto.LinkUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

@@ -8,10 +8,34 @@ app:
     stackoverflow: https://api.stackexchange.com/2.3
   bot-api: ${BOT_BASE_URL:http://localhost:8090}
   database-access-type: jpa
+  retry:
+    links:
+      http-statuses: 429, 500, 502, 503, 504
+      type: linear
+      max-attempts: 5
+      config:
+        initial-interval-millis: 1000
+        max-interval-millis: 50000
+        multiplier: 2
+    bot:
+      http-statuses: 429, 500
+      type: linear
+      max-attempts: 5
+      config:
+        initial-interval-millis: 1000
+        max-interval-millis: 50000
+        multiplier: 2
 
 spring:
   application:
     name: scrapper
+  cache:
+    cache-names:
+      - scrapper-rate-limit
+    caffeine:
+      spec: maximumSize=200000,expireAfterAccess=60s
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
   liquibase:
     enabled: false
   datasource:
@@ -24,6 +48,18 @@ spring:
 
 server:
   port: 8080
+
+bucket4j:
+  filters:
+    - cache-name: scrapper-rate-limit
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"Too Many Requests\" }"
+      rate-limits:
+        - bandwidths:
+            - capacity: 100
+              refill-speed: interval
+              time: 1
+              unit: minutes
+      url: /.*
 
 springdoc:
   swagger-ui:

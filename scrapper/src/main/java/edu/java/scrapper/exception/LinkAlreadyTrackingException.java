@@ -1,6 +1,6 @@
 package edu.java.scrapper.exception;
 
-import edu.java.models.exception.ApiErrorException;
+import edu.java.common.models.exception.ApiErrorException;
 import org.springframework.http.HttpStatus;
 
 public class LinkAlreadyTrackingException extends ApiErrorException {

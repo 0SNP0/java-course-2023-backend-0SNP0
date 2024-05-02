@@ -1,4 +1,4 @@
-package edu.java.models.dto;
+package edu.java.common.models.dto;
 
 import java.util.List;
 
