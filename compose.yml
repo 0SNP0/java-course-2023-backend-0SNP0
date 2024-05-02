@@ -1,6 +1,7 @@
 services:
   postgresql:
     image: postgres:16
+    container_name: postgresql
     ports:
       - "5432:5432"
     environment:
@@ -14,6 +15,7 @@ services:
 
   liquibase-migrations:
     image: liquibase/liquibase:4.25
+    container_name: liquibase-migrations
     depends_on:
       - postgresql
     command:
@@ -60,10 +62,35 @@ services:
     volumes:
       - kafka_data:/var/lib/kafka/data
 
+  prometheus:
+    image: prom/prometheus:v2.51.1
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - backend
+
+  grafana:
+    image: grafana/grafana-oss:10.4.1
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - backend
+
 volumes:
   postgresql: { }
   zoo_data: { }
   kafka_data: { }
+  prometheus_data: { }
+  grafana_data: { }
 
 networks:
   backend: { }
