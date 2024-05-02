@@ -1,9 +1,8 @@
 package edu.java.scrapper.repository;
 
-public interface ChatRepository {
-    boolean register(Long chatId);
+import edu.java.scrapper.entity.Chat;
 
-    boolean isRegistered(Long chatId);
+public interface ChatRepository extends JdbcRepository<Chat> {
 
-    boolean delete(Long chatId);
+    Chat get(Chat chat);
 }

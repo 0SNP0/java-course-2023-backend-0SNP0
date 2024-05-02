@@ -1,5 +1,6 @@
 package edu.java.bot.repository;
 
+import edu.java.bot.exception.UnsupportedLinkException;
 import edu.java.bot.exception.UserIsNotRegisteredException;
 import java.util.List;
 
@@ -8,7 +9,7 @@ public interface LinksRepository {
 
     boolean isRegistered(long chatId);
 
-    boolean addLink(long chatId, String link);
+    boolean addLink(long chatId, String link) throws UnsupportedLinkException;
 
     List<String> getLinks(long chatId) throws UserIsNotRegisteredException;
 
