@@ -12,6 +12,7 @@ public class GithubClient extends AbstractClient<GithubResponse> {
         super(
             apiUrl,
             GithubResponse.class,
+            "github.com",
             // "/<user>/<repo>"
             Pattern.compile("^/[0-9a-z-A-Z]+/[\\w-.]+/?$")
         );

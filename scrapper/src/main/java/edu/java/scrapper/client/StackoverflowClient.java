@@ -12,6 +12,7 @@ public class StackoverflowClient extends AbstractClient<StackoverflowResponse> {
         super(
             apiUrl,
             StackoverflowResponse.class,
+            "stackoverflow.com",
             Pattern.compile("^/questions/(?<id>\\\\d+)(/[\\w-]*)?(/)?$")
         );
     }

@@ -3,15 +3,13 @@ package edu.java.scrapper.service.jdbc;
 import edu.java.scrapper.entity.Chat;
 import edu.java.scrapper.exception.ChatAlreadyRegisteredException;
 import edu.java.scrapper.exception.ChatNotRegisteredException;
-import edu.java.scrapper.repository.ChatRepository;
+import edu.java.scrapper.repository.jdbc.ChatRepository;
 import edu.java.scrapper.service.ChatService;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcChatService implements ChatService {
     private final ChatRepository chatRepository;
@@ -35,7 +33,7 @@ public class JdbcChatService implements ChatService {
     }
 
     @Override
-    public void isRegistered(Long chatId) {
+    public void shouldBeRegistered(Long chatId) {
         try {
             chatRepository.get(new Chat().setChatId(chatId));
         } catch (EmptyResultDataAccessException e) {

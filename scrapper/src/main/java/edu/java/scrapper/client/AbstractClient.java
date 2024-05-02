@@ -10,12 +10,14 @@ public abstract class AbstractClient<T extends ClientResponse> implements Client
     protected final String hostUrl;
     protected final WebClient client;
     protected Class<T> responseEntity;
+    protected final String linkBaseUrl;
     protected final Pattern pattern;
 
-    protected AbstractClient(String apiUrl, Class<T> responseEntity, Pattern pattern) {
+    protected AbstractClient(String apiUrl, Class<T> responseEntity, String linkBaseUrl, Pattern pattern) {
         this.hostUrl = apiUrl;
         this.client = WebClient.create(apiUrl);
         this.responseEntity = responseEntity;
+        this.linkBaseUrl = linkBaseUrl;
         this.pattern = pattern;
     }
 
@@ -28,7 +30,7 @@ public abstract class AbstractClient<T extends ClientResponse> implements Client
 
     @Override
     public boolean supports(URI url) {
-        return hostUrl.equals(url.getHost().toLowerCase())
+        return linkBaseUrl.equals(url.getHost().toLowerCase())
             && pattern.matcher(url.getPath()).matches();
     }
 }

@@ -19,7 +19,7 @@ public class TgChatController {
 
     @GetMapping(ID_PATH)
     public void isRegistered(@PathVariable Long id) {
-        service.isRegistered(id);
+        service.shouldBeRegistered(id);
     }
 
     @PostMapping(ID_PATH)

@@ -2,7 +2,6 @@ package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.entity.Chat;
 import edu.java.scrapper.entity.Link;
-import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.time.Duration;

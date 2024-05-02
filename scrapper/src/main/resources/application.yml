@@ -6,7 +6,8 @@ app:
   clients:
     github: https://api.github.com
     stackoverflow: https://api.stackexchange.com/2.3
-  bot-api: ${SCRAPPER_BASE_URL:http://localhost:8080}
+  bot-api: ${BOT_BASE_URL:http://localhost:8090}
+  database-access-type: jpa
 
 spring:
   application:
@@ -17,6 +18,9 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/scrapper}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 server:
   port: 8080
